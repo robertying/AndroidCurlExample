@@ -5,7 +5,7 @@
 .\" *                            | (__| |_| |  _ <| |___
 .\" *                             \___|\___/|_| \_\_____|
 .\" *
-.\" * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
+.\" * Copyright (C) 1998 - 2020, Daniel Stenberg, <daniel@haxx.se>, et al.
 .\" *
 .\" * This software is licensed as described in the file COPYING, which
 .\" * you should have received as part of this distribution. The terms
@@ -31,8 +31,8 @@ curl \- transfer a URL
 .B curl
 is a tool to transfer data from or to a server, using one of the supported
 protocols (DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP,
-LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET
-and TFTP). The command is designed to work without user interaction.
+LDAPS, MQTT, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS,
+TELNET and TFTP). The command is designed to work without user interaction.
 
 curl offers a busload of useful tricks like proxy support, user
 authentication, FTP upload, HTTP post, SSL connections, cookies, file transfer
@@ -46,9 +46,9 @@ The URL syntax is protocol-dependent. You'll find a detailed description in
 RFC 3986.
 
 You can specify multiple URLs or parts of URLs by writing part sets within
-braces as in:
+braces and quoting the URL as in:
 
-  http://site.{one,two,three}.com
+  "http://site.{one,two,three}.com"
 
 or you can get sequences of alphanumeric series by using [] as in:
 
@@ -156,7 +156,7 @@ Specify a "" file name (zero length) to avoid loading/saving and make curl
 just handle the cache in memory.
 
 If this option is used several times, curl will load contents from all the
-files but the the last one will be used for saving.
+files but the last one will be used for saving.
 
 Added in 7.64.1.
 .IP "--anyauth"
@@ -305,8 +305,10 @@ This is a request, not an order; the server may or may not do it.
 Added in 7.56.0.
 .IP "--compressed"
 (HTTP) Request a compressed response using one of the algorithms curl supports, and
-save the uncompressed document.  If this option is used and the server sends
-an unsupported encoding, curl will report an error.
+automatically decompress the content. Headers are not modified.
+
+If this option is used and the server sends an unsupported encoding, curl will
+report an error.
 .IP "-K, --config <file>"
 
 Specify a text file to read curl arguments from. The command line arguments
@@ -432,7 +434,7 @@ to read previously stored cookie from. This option also activates the cookie
 engine which will make curl record incoming cookies, which may be handy if
 you're using this in combination with the \fI-L, --location\fP option or do multiple URL
 transfers on the same invoke. If the file name is exactly a minus ("-"), curl
-will instead the contents from stdin.
+will instead read the contents from stdin.
 
 The file format of the file to read cookies from should be plain HTTP headers
 (Set-Cookie style) or the Netscape/Mozilla cookie file format.
@@ -459,6 +461,8 @@ When used in conjunction with the \fI-o, --output\fP option, curl will create th
 necessary local directory hierarchy as needed. This option creates the dirs
 mentioned with the \fI-o, --output\fP option, nothing else. If the --output file name
 uses no dir or if the dirs it mentions already exist, no dir will be created.
+
+Created dirs are made with mode 0750 on unix style file systems.
 
 To create remote directories when using FTP or SFTP, try \fI--ftp-create-dirs\fP.
 .IP "--crlf"
@@ -523,7 +527,7 @@ name is expected to be URL-encoded already.
 
 See also \fI-d, --data\fP and \fI--data-raw\fP. Added in 7.18.0.
 .IP "-d, --data <data>"
-(HTTP) Sends the specified data in a POST request to the HTTP server, in the same way
+(HTTP MQTT) Sends the specified data in a POST request to the HTTP server, in the same way
 that a browser does when a user has filled in an HTML form and presses the
 submit button. This will cause curl to pass the data to the server using the
 content-type application/x-www-form-urlencoded.  Compare to \fI-F, --form\fP.
@@ -539,12 +543,11 @@ data pieces specified will be merged together with a separating
 chunk that looks like \&'name=daniel&skill=lousy'.
 
 If you start the data with the letter @, the rest should be a file name to
-read the data from, or - if you want curl to read the data from
-stdin. Multiple files can also be specified. Posting data from a file named
-\&'foobar' would thus be done with \fI-d, --data\fP @foobar. When --data is told to read
-from a file like that, carriage returns and newlines will be stripped out. If
-you don't want the @ character to have a special interpretation use \fI--data-raw\fP
-instead.
+read the data from, or - if you want curl to read the data from stdin. Posting
+data from a file named \&'foobar' would thus be done with \fI-d, --data\fP @foobar. When
+\fI-d, --data\fP is told to read from a file like that, carriage returns and newlines
+will be stripped out. If you don't want the @ character to have a special
+interpretation use \fI--data-raw\fP instead.
 
 See also \fI--data-binary\fP and \fI--data-urlencode\fP and \fI--data-raw\fP. This option overrides \fI-F, --form\fP and \fI-I, --head\fP and \fI-T, --upload-file\fP.
 .IP "--delegation <LEVEL>"
@@ -773,11 +776,11 @@ form-field to which the file portrait.jpg will be the input:
 
  curl -F profile=@portrait.jpg https://example.com/upload.cgi
 
-Example: send a your name and shoe size in two text fields to the server:
+Example: send your name and shoe size in two text fields to the server:
 
  curl -F name=John -F shoesize=11 https://example.com/
 
-Example: send a your essay in a text field to the server. Send it as a plain
+Example: send your essay in a text field to the server. Send it as a plain
 text field, but get the contents for it from a local file:
 
  curl -F "story=<hugefile.txt" https://example.com/
@@ -1289,14 +1292,16 @@ intercept the user+password. See also \fI--location-trusted\fP on how to change
 this. You can limit the amount of redirects to follow by using the
 \fI--max-redirs\fP option.
 
-When curl follows a redirect and the request is not a plain GET (for example
-POST or PUT), it will do the following request with a GET if the HTTP response
-was 301, 302, or 303. If the response code was any other 3xx code, curl will
-re-send the following request using the same unmodified method.
+When curl follows a redirect and if the request is a POST, it will do the
+following request with a GET if the HTTP response was 301, 302, or 303. If the
+response code was any other 3xx code, curl will re-send the following request
+using the same unmodified method.
 
-You can tell curl to not change the non-GET request method to GET after a 30x
-response by using the dedicated options for that: \fI--post301\fP, \fI--post302\fP and
-\fI--post303\fP.
+You can tell curl to not change POST requests to GET after a 30x response by
+using the dedicated options for that: \fI--post301\fP, \fI--post302\fP and \fI--post303\fP.
+
+The method set with \fI-X, --request\fP overrides the method curl would otherwise select
+to use.
 .IP "--login-options <options>"
 (IMAP POP3 SMTP) Specify the login options to use during server authentication.
 
@@ -1318,6 +1323,18 @@ See also \fI--mail-rcpt\fP and \fI--mail-from\fP. Added in 7.25.0.
 (SMTP) Specify a single address that the given mail should get sent from.
 
 See also \fI--mail-rcpt\fP and \fI--mail-auth\fP. Added in 7.20.0.
+.IP "--mail-rcpt-allowfails"
+(SMTP) When sending data to multiple recipients, by default curl will abort SMTP
+conversation if at least one of the recipients causes RCPT TO command to
+return an error.
+
+The default behavior can be changed by passing \fI--mail-rcpt-allowfails\fP
+command-line option which will make curl ignore errors and proceed with the
+remaining valid recipients.
+
+In case when all recipients cause RCPT TO command to fail, curl will abort SMTP
+conversation and return the error received from to the last RCPT TO command.
+Added in 7.69.0.
 .IP "--mail-rcpt <address>"
 (SMTP) Specify a single address, user name or mailing list name. Repeat this
 option several times to send to multiple recipients.
@@ -1524,7 +1541,7 @@ If this option is used several times, only the first one is used.
 
 See also \fI--proxy-ntlm\fP. \fI--ntlm\fP requires that the underlying libcurl was built to support TLS. This option overrides \fI--basic\fP and \fI--negotiate\fP and \fI--digest\fP and \fI--anyauth\fP.
 .IP "--oauth2-bearer <token>"
-(IMAP POP3 SMTP) Specify the Bearer Token for OAUTH 2.0 server authentication. The Bearer Token
+(IMAP POP3 SMTP HTTP) Specify the Bearer Token for OAUTH 2.0 server authentication. The Bearer Token
 is used in conjunction with the user name which can be specified as part of
 the \fI--url\fP or \fI-u, --user\fP options.
 
@@ -1533,15 +1550,15 @@ The Bearer Token and user name are formatted according to RFC 6750.
 If this option is used several times, the last one will be used.
 .IP "-o, --output <file>"
 Write output to <file> instead of stdout. If you are using {} or [] to fetch
-multiple documents, you can use '#' followed by a number in the <file>
-specifier. That variable will be replaced with the current string for the URL
-being fetched. Like in:
+multiple documents, you should quote the URL and you can use '#' followed by a
+number in the <file> specifier. That variable will be replaced with the current
+string for the URL being fetched. Like in:
 
- curl http://{one,two}.example.com -o "file_#1.txt"
+ curl "http://{one,two}.example.com" -o "file_#1.txt"
 
 or use several variables like:
 
- curl http://{site,host}.host[1-5].com -o "#1_#2"
+ curl "http://{site,host}.host[1-5].com" -o "#1_#2"
 
 You may use this option as many times as the number of URLs you have. For
 example, if you specify two URLs on the same command line, you can use it like
@@ -2378,6 +2395,12 @@ doesn't support SSL/TLS.
 This option was formerly known as --ftp-ssl-reqd.
 
 Added in 7.20.0.
+.IP "--ssl-revoke-best-effort"
+(Schannel) This option tells curl to ignore certificate revocation checks when
+they failed due to missing/offline distribution points for the revocation check
+lists.
+
+Added in 7.70.0.
 .IP "--ssl"
 (FTP IMAP POP3 SMTP) 
 Try to use SSL/TLS for the connection.  Reverts to a non-secure connection if
@@ -2631,6 +2654,9 @@ setting a default protocol, see \fI--proto-default\fP for details.
 
 This option may be used any number of times. To control where this URL is
 written, use the \fI-o, --output\fP or the \fI-O, --remote-name\fP options.
+
+Warning: On Windows, particular file:// accesses can be converted to network
+accesses by the operating system. Beware!
 .IP "-B, --use-ascii"
 (FTP LDAP) Enable ASCII transfer. For FTP, this can also be enforced by using a URL that
 ends with ";type=A". This option causes data sent to stdout to be in text mode
@@ -2797,6 +2823,9 @@ curl CONNECT request. (Added in 7.12.4)
 .TP
 .B http_version
 The http version that was effectively used. (Added in 7.50.0)
+.TP
+.B json
+A JSON object with all available keys.
 .TP
 .B local_ip
 The IP address of the local end of the most recently done connection - can be
