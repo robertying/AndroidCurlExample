@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         System.loadLibrary("curl-a-website");
 
+        CurlHelper.copyCaBundleFromAssetsToInternalStorage(this);
         CA_BUNDLE = CurlHelper.getCaBundlePath(this);
 
         button.setOnClickListener(new View.OnClickListener() {
