@@ -5,6 +5,6 @@
 extern char *CA_BUNDLE_PATH;
 #endif
 
-void curl_a_website(const char *url);
+uint8_t curl_a_website(const char *url);
 
 #endif

@@ -1,7 +1,7 @@
 #include <curl/curl.h>
 #include "curl_a_website.h"
 
-void curl_a_website(const char *url) {
+uint8_t curl_a_website(const char *url) {
     CURL *curl = curl_easy_init();
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -10,7 +10,14 @@ void curl_a_website(const char *url) {
     curl_easy_setopt(curl, CURLOPT_CAINFO, CA_BUNDLE_PATH);
 #endif
 
-    curl_easy_perform(curl);
+    uint8_t success = 0;
+    CURLcode response = curl_easy_perform(curl);
+
+    if (response == CURLE_OK) {
+        success = 1;
+    }
 
     curl_easy_cleanup(curl);
+
+    return success;
 }
