@@ -6,11 +6,11 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 2001 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 2001 - 2020, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -21,7 +21,7 @@
 #
 ###########################################################################
 
-prefix=/Users/rying/code/openssl-curl-android/curl/build/arm64-v8a
+prefix=/Users/rying/repo/openssl-curl-android/curl/build/arm64-v8a
 exec_prefix=${prefix}
 includedir=${prefix}/include
 cppflag_curl_staticlib=-DCURL_STATICLIB
@@ -76,7 +76,7 @@ while test $# -gt 0; do
         ;;
 
     --cc)
-        echo "/Users/rying/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang"
+        echo "/Users/rying/Library/Android/sdk/ndk/22.0.7026061/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang"
         ;;
 
     --prefix)
@@ -84,19 +84,19 @@ while test $# -gt 0; do
         ;;
 
     --feature|--features)
-        for feature in SSL AsynchDNS TLS-SRP HTTPS-proxy ""; do
+        for feature in AsynchDNS SSL TLS-SRP alt-svc ""; do
             test -n "$feature" && echo "$feature"
         done
         ;;
 
     --protocols)
-        for protocol in HTTP HTTPS; do
+        for protocol in HTTP HTTPS MQTT; do
             echo "$protocol"
         done
         ;;
 
     --version)
-        echo libcurl 7.70.0-DEV
+        echo libcurl 7.74.0-DEV
         exit 0
         ;;
 
@@ -108,11 +108,11 @@ while test $# -gt 0; do
         # dash as that's used for things like version 1.2.3-CVS
         cpatch=`echo $checkfor | cut -d. -f3 | cut -d- -f1`
 
-        vmajor=`echo 7.70.0-DEV | cut -d. -f1`
-        vminor=`echo 7.70.0-DEV | cut -d. -f2`
+        vmajor=`echo 7.74.0-DEV | cut -d. -f1`
+        vminor=`echo 7.74.0-DEV | cut -d. -f2`
         # when extracting the patch part we strip off everything after a
         # dash as that's used for things like version 1.2.3-CVS
-        vpatch=`echo 7.70.0-DEV | cut -d. -f3 | cut -d- -f1`
+        vpatch=`echo 7.74.0-DEV | cut -d. -f3 | cut -d- -f1`
 
         if test "$vmajor" -gt "$cmajor"; then
             exit 0;
@@ -128,12 +128,12 @@ while test $# -gt 0; do
             fi
         fi
 
-        echo "requested version $checkfor is newer than existing 7.70.0-DEV"
+        echo "requested version $checkfor is newer than existing 7.74.0-DEV"
         exit 1
         ;;
 
     --vernum)
-        echo 074600
+        echo 074a00
         exit 0
         ;;
 
@@ -160,7 +160,7 @@ while test $# -gt 0; do
         else
            CURLLIBDIR=""
         fi
-        if test "Xyes" = "Xyes"; then
+        if test "Xno" = "Xno"; then
           echo ${CURLLIBDIR}-lcurl -lssl -lcrypto -lssl -lcrypto
         else
           echo ${CURLLIBDIR}-lcurl
@@ -172,7 +172,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo ${exec_prefix}/lib/libcurl.a -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections -L/Users/rying/code/openssl-curl-android/openssl/build/arm64-v8a/lib -lssl -lcrypto -lssl -lcrypto
+          echo ${exec_prefix}/lib/libcurl.a -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections -L/Users/rying/repo/openssl-curl-android/openssl/build/arm64-v8a/lib -lssl -lcrypto -lssl -lcrypto
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -180,7 +180,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--host=aarch64-linux-android' '--target=aarch64-linux-android' '--prefix=/Users/rying/code/openssl-curl-android/curl/build/arm64-v8a' '--with-ssl=/Users/rying/code/openssl-curl-android/curl/../openssl/build/arm64-v8a' '--disable-shared' '--disable-verbose' '--disable-manual' '--disable-crypto-auth' '--disable-unix-sockets' '--disable-ares' '--disable-rtsp' '--disable-ipv6' '--disable-proxy' '--disable-versioned-symbols' '--enable-hidden-symbols' '--without-libidn' '--without-librtmp' '--without-zlib' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' 'host_alias=aarch64-linux-android' 'target_alias=aarch64-linux-android' 'CC=/Users/rying/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang' 'CFLAGS=-Os -ffunction-sections -fdata-sections -fno-unwind-tables -fno-asynchronous-unwind-tables' 'LDFLAGS=-Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections'"
+        echo " '--host=aarch64-linux-android' '--target=aarch64-linux-android' '--prefix=/Users/rying/repo/openssl-curl-android/curl/build/arm64-v8a' '--with-ssl=/Users/rying/repo/openssl-curl-android/curl/../openssl/build/arm64-v8a' '--disable-shared' '--disable-verbose' '--disable-manual' '--disable-crypto-auth' '--disable-unix-sockets' '--disable-ares' '--disable-rtsp' '--disable-ipv6' '--disable-proxy' '--disable-versioned-symbols' '--enable-hidden-symbols' '--without-libidn' '--without-librtmp' '--without-zlib' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' 'host_alias=aarch64-linux-android' 'target_alias=aarch64-linux-android' 'CC=/Users/rying/Library/Android/sdk/ndk/22.0.7026061/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang' 'CFLAGS=-Os -ffunction-sections -fdata-sections -fno-unwind-tables -fno-asynchronous-unwind-tables' 'LDFLAGS=-Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections'"
         ;;
 
     *)

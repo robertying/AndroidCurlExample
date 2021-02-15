@@ -17,7 +17,7 @@ old_library='libcurl.a'
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/Users/rying/code/openssl-curl-android/openssl/build/x86_64/lib -lssl -lcrypto'
+dependency_libs=' -L/Users/rying/repo/openssl-curl-android/openssl/build/x86_64/lib -lssl -lcrypto'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/Users/rying/code/openssl-curl-android/curl/build/x86_64/lib'
+libdir='/Users/rying/repo/openssl-curl-android/curl/build/x86_64/lib'

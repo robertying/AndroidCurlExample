@@ -9,7 +9,7 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -23,17 +23,17 @@
 # This should most probably benefit from getting a "Requires:" field added
 # dynamically by configure.
 #
-prefix=/Users/rying/code/openssl-curl-android/curl/build/arm64-v8a
+prefix=/Users/rying/repo/openssl-curl-android/curl/build/arm64-v8a
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
-supported_protocols="HTTP HTTPS"
-supported_features="SSL AsynchDNS TLS-SRP HTTPS-proxy"
+supported_protocols="HTTP HTTPS MQTT"
+supported_features="AsynchDNS SSL TLS-SRP alt-svc"
 
 Name: libcurl
-URL: https://curl.haxx.se/
+URL: https://curl.se/
 Description: Library to transfer files with ftp, http, etc.
-Version: 7.70.0-DEV
-Libs: -L${libdir} -lcurl
+Version: 7.74.0-DEV
+Libs: -L${libdir} -lcurl -lssl -lcrypto -lssl -lcrypto 
 Libs.private: -lssl -lcrypto -lssl -lcrypto
 Cflags: -I${includedir} -DCURL_STATICLIB
