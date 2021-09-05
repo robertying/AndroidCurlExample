@@ -23,5 +23,5 @@ LOCAL_C_INCLUDES :=
 LOCAL_MODULE := curl-a-website
 LOCAL_SRC_FILES := jni.c curl-a-website/curl_a_website.c
 LOCAL_STATIC_LIBRARIES := libcurl libssl libcrypto
-LOCAL_LDLIBS := -llog
+LOCAL_LDLIBS := -lz
 include $(BUILD_SHARED_LIBRARY)
