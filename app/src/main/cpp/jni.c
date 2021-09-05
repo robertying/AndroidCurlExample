@@ -14,3 +14,10 @@ Java_io_robertying_androidcurlexample_CurlHelper_curlAWebsite(JNIEnv *env,
     uint8_t success = curl_a_website(c_url);
     return success;
 }
+
+JNIEXPORT jstring JNICALL
+Java_io_robertying_androidcurlexample_CurlHelper_getCurlVersion(JNIEnv *env,
+                                                              jobject this) {
+    const char* versionChar = get_curl_version();
+    return (*env)->NewStringUTF(env, versionChar);
+}

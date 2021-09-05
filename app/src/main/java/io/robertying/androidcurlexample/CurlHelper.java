@@ -13,6 +13,7 @@ public class CurlHelper {
     private static final String CA_BUNDLE_NAME = "cacert.pem";
 
     public native static boolean curlAWebsite(String caBundlePath, String url);
+    public native static String getCurlVersion();
 
     public static void copyCaBundleFromAssetsToInternalStorage(Context context) {
         AssetManager assetManager = context.getApplicationContext().getAssets();

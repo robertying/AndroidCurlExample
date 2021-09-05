@@ -21,3 +21,8 @@ uint8_t curl_a_website(const char *url) {
 
     return success;
 }
+
+const char* get_curl_version() {
+    curl_version_info_data* data = curl_version_info(CURLVERSION_NOW);
+    return data->version;
+}
