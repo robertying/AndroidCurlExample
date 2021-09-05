@@ -76,7 +76,7 @@ while test $# -gt 0; do
         ;;
 
     --cc)
-        echo "/Users/rying/Library/Android/sdk/ndk/22.0.7026061/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android21-clang"
+        echo "/Users/rying/Library/Android/sdk/ndk/23.0.7599858/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android23-clang"
         ;;
 
     --prefix)
@@ -84,19 +84,19 @@ while test $# -gt 0; do
         ;;
 
     --feature|--features)
-        for feature in AsynchDNS SSL TLS-SRP alt-svc ""; do
+        for feature in AsynchDNS HSTS HTTPS-proxy IPv6 Largefile NTLM NTLM_WB SSL TLS-SRP UnixSockets alt-svc libz ""; do
             test -n "$feature" && echo "$feature"
         done
         ;;
 
     --protocols)
-        for protocol in HTTP HTTPS MQTT; do
+        for protocol in DICT FILE FTP FTPS GOPHER GOPHERS HTTP HTTPS IMAP IMAPS MQTT POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP; do
             echo "$protocol"
         done
         ;;
 
     --version)
-        echo libcurl 7.74.0-DEV
+        echo libcurl 7.78.0-DEV
         exit 0
         ;;
 
@@ -108,11 +108,11 @@ while test $# -gt 0; do
         # dash as that's used for things like version 1.2.3-CVS
         cpatch=`echo $checkfor | cut -d. -f3 | cut -d- -f1`
 
-        vmajor=`echo 7.74.0-DEV | cut -d. -f1`
-        vminor=`echo 7.74.0-DEV | cut -d. -f2`
+        vmajor=`echo 7.78.0-DEV | cut -d. -f1`
+        vminor=`echo 7.78.0-DEV | cut -d. -f2`
         # when extracting the patch part we strip off everything after a
         # dash as that's used for things like version 1.2.3-CVS
-        vpatch=`echo 7.74.0-DEV | cut -d. -f3 | cut -d- -f1`
+        vpatch=`echo 7.78.0-DEV | cut -d. -f3 | cut -d- -f1`
 
         if test "$vmajor" -gt "$cmajor"; then
             exit 0;
@@ -128,12 +128,12 @@ while test $# -gt 0; do
             fi
         fi
 
-        echo "requested version $checkfor is newer than existing 7.74.0-DEV"
+        echo "requested version $checkfor is newer than existing 7.78.0-DEV"
         exit 1
         ;;
 
     --vernum)
-        echo 074a00
+        echo 074e00
         exit 0
         ;;
 
@@ -161,7 +161,7 @@ while test $# -gt 0; do
            CURLLIBDIR=""
         fi
         if test "Xno" = "Xno"; then
-          echo ${CURLLIBDIR}-lcurl -lssl -lcrypto -lssl -lcrypto
+          echo ${CURLLIBDIR}-lcurl -lssl -lcrypto -lssl -lcrypto -lz
         else
           echo ${CURLLIBDIR}-lcurl
         fi
@@ -172,7 +172,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo ${exec_prefix}/lib/libcurl.a -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections -L/Users/rying/repo/openssl-curl-android/openssl/build/x86_64/lib -lssl -lcrypto -lssl -lcrypto
+          echo ${exec_prefix}/lib/libcurl.a -Wl,-Bsymbolic -L/Users/rying/repo/openssl-curl-android/openssl/build/x86_64/lib -lssl -lcrypto -lssl -lcrypto -lz
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -180,7 +180,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--host=x86_64-linux-android' '--target=x86_64-linux-android' '--prefix=/Users/rying/repo/openssl-curl-android/curl/build/x86_64' '--with-ssl=/Users/rying/repo/openssl-curl-android/curl/../openssl/build/x86_64' '--disable-shared' '--disable-verbose' '--disable-manual' '--disable-crypto-auth' '--disable-unix-sockets' '--disable-ares' '--disable-rtsp' '--disable-ipv6' '--disable-proxy' '--disable-versioned-symbols' '--enable-hidden-symbols' '--without-libidn' '--without-librtmp' '--without-zlib' '--disable-dict' '--disable-file' '--disable-ftp' '--disable-ftps' '--disable-gopher' '--disable-imap' '--disable-imaps' '--disable-pop3' '--disable-pop3s' '--disable-smb' '--disable-smbs' '--disable-smtp' '--disable-smtps' '--disable-telnet' '--disable-tftp' 'host_alias=x86_64-linux-android' 'target_alias=x86_64-linux-android' 'CC=/Users/rying/Library/Android/sdk/ndk/22.0.7026061/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android21-clang' 'CFLAGS=-Os -ffunction-sections -fdata-sections -fno-unwind-tables -fno-asynchronous-unwind-tables' 'LDFLAGS=-Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections'"
+        echo " '--host=x86_64-linux-android' '--target=x86_64-linux-android' '--prefix=/Users/rying/repo/openssl-curl-android/curl/build/x86_64' '--with-openssl=/Users/rying/repo/openssl-curl-android/curl/../openssl/build/x86_64' '--with-pic' '--disable-shared' 'host_alias=x86_64-linux-android' 'target_alias=x86_64-linux-android' 'CC=/Users/rying/Library/Android/sdk/ndk/23.0.7599858/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android23-clang' 'CFLAGS=-Os' 'LDFLAGS=-Wl,-Bsymbolic' 'CPPFLAGS=-I/opt/homebrew/opt/curl/include'"
         ;;
 
     *)

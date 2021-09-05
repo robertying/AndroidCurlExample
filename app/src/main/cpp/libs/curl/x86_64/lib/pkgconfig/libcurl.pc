@@ -27,13 +27,13 @@ prefix=/Users/rying/repo/openssl-curl-android/curl/build/x86_64
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
-supported_protocols="HTTP HTTPS MQTT"
-supported_features="AsynchDNS SSL TLS-SRP alt-svc"
+supported_protocols="DICT FILE FTP FTPS GOPHER GOPHERS HTTP HTTPS IMAP IMAPS MQTT POP3 POP3S RTSP SMB SMBS SMTP SMTPS TELNET TFTP"
+supported_features="AsynchDNS HSTS HTTPS-proxy IPv6 Largefile NTLM NTLM_WB SSL TLS-SRP UnixSockets alt-svc libz"
 
 Name: libcurl
 URL: https://curl.se/
 Description: Library to transfer files with ftp, http, etc.
-Version: 7.74.0-DEV
-Libs: -L${libdir} -lcurl -lssl -lcrypto -lssl -lcrypto 
-Libs.private: -lssl -lcrypto -lssl -lcrypto
+Version: 7.78.0-DEV
+Libs: -L${libdir} -lcurl -lssl -lcrypto -lssl -lcrypto -lz 
+Libs.private: -lssl -lcrypto -lssl -lcrypto -lz
 Cflags: -I${includedir} -DCURL_STATICLIB
